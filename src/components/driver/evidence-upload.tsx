@@ -1,4 +1,7 @@
 "use client";
+import {T} from "@/components/i18n/language-provider";
+import {Input} from "@/components/i18n/fields";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -28,5 +31,5 @@ export function EvidenceUpload({shipment,driver}:{shipment:string;driver:string}
       setMessage("Connection interrupted. Reload the evidence list to check whether the file was saved before uploading again.");
     } finally {setBusy(false);}
   }
-  return <section className="panel"><div className="panel-heading"><h2>Upload evidence</h2></div><form onSubmit={upload} className="shipment-form evidence-upload-form"><fieldset disabled={busy}><legend>Shipment evidence</legend><div className="form-field"><label htmlFor="document-type">Evidence type</label><select id="document-type" name="document_type"><option value="photo">Photo</option><option value="delivery_receipt">Delivery receipt</option><option value="customs">Customs document</option><option value="other">Other</option></select></div><div className="form-field"><label htmlFor="evidence">Photo or document</label><input id="evidence" name="evidence" type="file" accept="image/jpeg,image/png,application/pdf" required /><small>JPEG, PNG or PDF · Maximum 10 MiB · Internet required</small></div><button className="button button-dark" type="submit">{busy ? "Uploading…" : "Upload evidence"}</button></fieldset><p role="status">{message}</p><noscript>Enable JavaScript to upload files.</noscript></form></section>;
+  return <section className="panel"><div className="panel-heading"><h2><T>Upload evidence</T></h2></div><form onSubmit={upload} className="shipment-form evidence-upload-form"><fieldset disabled={busy}><legend><T>Shipment evidence</T></legend><div className="form-field"><label htmlFor="document-type"><T>Evidence type</T></label><select id="document-type" name="document_type"><option value="photo"><T>Photo</T></option><option value="delivery_receipt"><T>Delivery receipt</T></option><option value="customs"><T>Customs document</T></option><option value="other"><T>Other</T></option></select></div><div className="form-field"><label htmlFor="evidence"><T>Photo or document</T></label><Input id="evidence" name="evidence" type="file" accept="image/jpeg,image/png,application/pdf" required /><small><T>JPEG, PNG or PDF · Maximum 10 MiB · Internet required</T></small></div><button className="button button-dark" type="submit"><T>{busy ? "Uploading…" : "Upload evidence"}</T></button></fieldset><p role="status"><T>{message}</T></p><noscript><T>Enable JavaScript to upload files.</T></noscript></form></section>;
 }

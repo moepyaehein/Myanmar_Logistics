@@ -1,108 +1,28 @@
+import {LanguageSwitch} from "@/components/i18n/language-switch";
+
+import {T} from "@/components/i18n/language-provider";
 import Link from "next/link";
-import { AppShell } from "@/components/layout/app-shell";
-import { Icon } from "@/components/ui/icon";
-import { StatusBadge } from "@/components/ui/status-badge";
-import { previewGates, previewShipments } from "@/lib/demo-data";
+import { Wordmark, RouteDrawing } from "@/components/brand/public-brand";
 
-export default function OverviewPage() {
-  const active = previewShipments.filter((shipment) => !["requested", "delivered"].includes(shipment.status)).length;
-  const requested = previewShipments.filter((shipment) => shipment.status === "requested").length;
-
-  return (
-    <AppShell>
-      <section id="overview" className="page-heading">
-        <div>
-          <p className="eyebrow">YOUR OPERATIONS, AT A GLANCE</p>
-          <h1>Logistics overview<span>.</span></h1>
-          <p className="muted">A clearer view of your cargo, from origin to border.</p>
-        </div>
-        <Link className="button button-dark" href="/login">Sign in<Icon name="arrow" /></Link>
+export default function HomePage() {
+  return <div className="public-site">
+    <a className="skip-link" href="#content"><T>Skip to content</T></a>
+    <header className="site-header"><Wordmark /><nav aria-label="Main navigation"><LanguageSwitch/><a href="#how-it-works" className="desktop-nav"><T>How it works</T></a><a href="#routes" className="desktop-nav"><T>The routes</T></a><Link href="/login"><T>Log in</T></Link><Link href="/signup" className="ink-button small-button"><T>Get started </T><span aria-hidden="true">↗</span></Link></nav></header>
+    <main id="content">
+      <section className="landing-hero">
+        <div className="hero-copy"><p className="editorial-label"><span className="rust-rule" /><T> BUILT AROUND MYANMAR’S TRADE</T></p><h1><T>Every shipment.</T><br /><T>A clearer </T><em><T>journey.</T></em></h1><p className="hero-description"><T>From a warehouse in Yangon to a checkpoint in Muse. Keep your cargo, your drivers and your next decision on the same page.</T></p><div className="hero-actions"><Link href="/signup" className="ink-button"><T>Start your first shipment </T><span aria-hidden="true">↗</span></Link><a href="#how-it-works" className="underlined-link"><T>Take a closer look </T><span aria-hidden="true">↓</span></a></div><p className="hero-footnote"><T>One shared view for traders, drivers and operations.</T></p></div>
+        <figure className="journey-print"><div className="print-heading"><span><T>FIELD NOTES / 01</T></span><span><T>MYANMAR CORRIDORS</T></span></div><RouteDrawing /><figcaption><span><T>A country connected by journeys.</T></span><span><T>Illustrated routes · Not live conditions</T></span></figcaption></figure>
       </section>
-      <div className="preview-notice">
-        <span className="notice-icon"><Icon name="layers" /></span>
-        <p><strong>The foundation is ready.</strong> This overview uses sample data. Sign in to view your workspace; shipment actions and live tracking are coming next.</p>
-        <a href="#roadmap">View roadmap <span aria-hidden="true">↗</span></a>
-      </div>
-      <section className="stats-grid" aria-label="Sample shipment statistics">
-        <Stat label="Total shipments" value={String(previewShipments.length).padStart(2, "0")} detail="Across 2 border routes" icon="box" />
-        <Stat label="Active shipments" value={String(active).padStart(2, "0")} detail="In transit & at customs" icon="truck" />
-        <Stat label="Awaiting approval" value={String(requested).padStart(2, "0")} detail="Ready for admin review" icon="layers" />
-        <Stat label="Open border gates" value={`${previewGates.filter((gate) => gate.status === "open").length} / ${previewGates.length}`} detail="Illustrative gate conditions" icon="route" />
-      </section>
-      <div className="overview-grid">
-        <section className="panel route-panel" aria-labelledby="route-title">
-          <div className="panel-heading"><div><p className="eyebrow">CONNECTED JOURNEYS</p><h2 id="route-title">Trade routes</h2></div><span className="neutral-chip">Myanmar</span></div>
-          <div className="route-illustration">
-            <div className="route-guide">ORIGIN <span>BORDER DESTINATION</span></div>
-            {previewShipments.map((shipment) => (
-              <div className="route-lane" key={shipment.id}>
-                <div className="route-city"><span className="city-dot" /><strong>{shipment.origin}</strong><small>Origin hub</small></div>
-                <div className={`route-line ${shipment.status === "requested" ? "secondary-line" : ""}`}>
-                  {shipment.status === "in_transit" && <span className="truck-marker"><Icon name="truck" /></span>}
-                  {shipment.status === "customs" && <span className="checkpoint-marker"><Icon name="box" /></span>}
-                </div>
-                <div className="route-city end-city"><span className="city-dot destination-dot" /><strong>{shipment.destination}</strong><small>{shipment.gateId === "muse" ? "China border" : "Thailand border"}</small></div>
-              </div>
-            ))}
-          </div>
-          <div className="route-caption"><span><span className="legend-dot" />3 sample journeys · 2 corridors</span><span>Route schematic · Map in Phase 6</span></div>
-        </section>
-        <section id="gates" className="panel gate-panel" aria-labelledby="gates-title">
-          <div className="panel-heading"><div><p className="eyebrow">BORDER CONNECTIONS</p><h2 id="gates-title">Gate overview</h2></div><Icon name="route" /></div>
-          {previewGates.map((gate) => (
-            <div className="gate-row" key={gate.id}>
-              <div className="gate-icon"><Icon name="route" /></div>
-              <div><h3>{gate.name} Gate</h3><p>{gate.connection}</p></div>
-              <StatusBadge status={gate.status} />
-            </div>
-          ))}
-          <div className="gate-note"><Icon name="bell" /><p>Gate changes will automatically notify traders with affected shipments.<span>Management in Phase 4 · Alerts in Phase 7</span></p></div>
-          <p className="sample-footnote">Sample conditions, not live border information.</p>
-        </section>
-      </div>
-      <section id="shipments" className="panel shipments-panel" aria-labelledby="shipments-title">
-        <div className="panel-heading"><div><h2 id="shipments-title">Shipment overview</h2><p className="panel-subtitle">Three journeys to bring the demo to life.</p></div><span className="neutral-chip">3 sample shipments</span></div>
-        <div className="table-scroll" tabIndex={0} role="region" aria-label="Sample shipments table, scroll horizontally on small screens">
-          <table>
-            <caption className="sr-only">Static example shipments. No live records or shipment actions are available in Phase 1.</caption>
-            <thead><tr><th scope="col">SHIPMENT</th><th scope="col">ROUTE</th><th scope="col">CARGO</th><th scope="col">DRIVER</th><th scope="col">STATUS</th><th scope="col">GATE</th></tr></thead>
-            <tbody>
-              {previewShipments.map((shipment) => {
-                const gate = previewGates.find((item) => item.id === shipment.gateId);
-                return (
-                  <tr key={shipment.id}>
-                    <td><span className="shipment-number">{shipment.shipmentNumber}</span><span className="table-subtext">Demo shipment</span></td>
-                    <td><span className="route-cell">{shipment.origin}<span aria-hidden="true">→</span>{shipment.destination}</span></td>
-                    <td>{shipment.cargo}<span className="table-subtext">{shipment.quantity}</span></td>
-                    <td>{shipment.driver ? <span className="driver-cell"><span className="driver-avatar">AM</span>{shipment.driver}</span> : <span className="muted">Unassigned</span>}</td>
-                    <td><StatusBadge status={shipment.status} /></td>
-                    <td>{gate ? <StatusBadge status={gate.status} /> : "Unavailable"}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-        <div className="table-footer"><span>Showing all 3 sample shipments</span><span>Sign in to view your authorized database records</span></div>
-      </section>
-      <div className="bottom-grid">
-        <section id="alerts" className="panel alerts-panel">
-          <div className="panel-heading"><h2>Notifications</h2><span className="neutral-chip">Preview</span></div>
-          <div className="empty-state"><span className="empty-icon"><Icon name="bell" /></span><div><h3>Your alerts will appear here</h3><p>Shipment updates and route notices, in one place.<br />Live notifications are planned for Phase 7.</p></div></div>
-        </section>
-        <section id="roadmap" className="panel roadmap-panel">
-          <div className="panel-heading"><h2>A foundation for what’s next</h2><span className="phase-label">02 / 10</span></div>
-          <div className="roadmap-items">
-            <div><span className="step-circle completed"><Icon name="check" /></span><span>Application foundation<small>Current phase</small></span></div>
-            <div><span className="step-circle">02</span><span>Authentication & access<small>Current phase</small></span></div>
-            <div><span className="step-circle">03</span><span>Trader shipment workflow<small>Next phase</small></span></div>
-          </div>
-        </section>
-      </div>
-    </AppShell>
-  );
-}
-
-function Stat({ label, value, detail, icon }: { label: string; value: string; detail: string; icon: "box" | "truck" | "layers" | "route" }) {
-  return <article className="stat-card"><div className="stat-top"><span>{label}</span><Icon name={icon} /></div><p className="stat-value">{value}</p><p className="stat-detail">{detail}</p></article>;
+      <div className="capability-strip" aria-label="Shipment tools"><span><T>Shipment tracking</T></span><span><T>Border gate alerts</T></span><span><T>Driver updates</T></span><span><T>Delivery documents</T></span></div>
+      <section id="how-it-works" className="editorial-section workflow-section"><div className="section-intro"><p className="editorial-label"><T>01 / FROM REQUEST TO ARRIVAL</T></p><h2><T>Less chasing updates.</T><br /><em><T>More knowing.</T></em></h2><p><T>Moving goods takes coordination. Keep the details together, so everyone can see what happened and what comes next.</T></p></div><ol className="workflow-list">{[
+        ["Make the request.","Tell operations what you’re moving, where it’s going and when it needs to leave. Your shipment starts with a clear record."],
+        ["Follow the road.","Operations assigns a driver. Each saved status and location update appears on your shipment timeline and map."],
+        ["Stay ahead of a change.","When operations reports a gate delay or closure, affected traders receive an alert. Photos and paperwork stay with the shipment."],
+      ].map(([title,description],index)=><li key={title}><span className="step-number">0{index+1}</span><div><h3>{title}</h3><p>{description}</p></div><span className="step-arrow" aria-hidden="true">↗</span></li>)}</ol></section>
+      <section id="routes" className="corridor-section"><div className="corridor-heading"><p className="editorial-label"><T>02 / THE ROUTES WE WORK AROUND</T></p><h2><T>Local routes.</T><br /><em><T>Shared visibility.</T></em></h2><p><T>Built for the handoffs between Myanmar’s trading hubs and border gates.</T></p></div><div className="corridor-list"><article><span className="route-index"><T>NORTHERN CORRIDOR</T></span><h3><T>Yangon </T><span aria-hidden="true">↗</span><T> Muse</T></h3><p><T>Through Mandalay, towards the China border.</T></p><div className="route-stops"><span><T>Yangon</T></span><i /><span><T>Mandalay</T></span><i /><span><T>Muse</T></span></div></article><article><span className="route-index"><T>EASTERN CORRIDOR</T></span><h3><T>Yangon </T><span aria-hidden="true">↗</span><T> Myawaddy</T></h3><p><T>From the commercial hub towards the Thailand border.</T></p><div className="route-stops"><span><T>Yangon</T></span><i /><span><T>Myawaddy</T></span></div></article><p className="corridor-note"><T>Route conditions are reported by your operations team. Check the latest gate status inside your workspace.</T></p></div></section>
+      <section className="editorial-section people-section"><div className="section-intro"><p className="editorial-label"><T>03 / EVERYONE HAS THEIR PART</T></p><h2><T>One journey.</T><br /><em><T>Three perspectives.</T></em></h2></div><div className="people-list"><article><span><T>FOR TRADERS</T></span><h3><T>Your cargo, in view.</T></h3><p><T>Request transport, follow progress and find your shipment documents in one place.</T></p><Link href="/signup" className="underlined-link"><T>Create a Trader account ↗</T></Link></article><article><span><T>FOR OPERATIONS</T></span><h3><T>A coordinated day.</T></h3><p><T>Review requests, assign drivers and share gate conditions with the people affected.</T></p></article><article><span><T>FOR DRIVERS</T></span><h3><T>Keep the team posted.</T></h3><p><T>Share a status, capture your location and attach evidence from your phone. Queue updates from an open page when offline.</T></p></article></div></section>
+      <section className="closing-section"><p className="editorial-label"><T>THE NEXT JOURNEY STARTS HERE</T></p><h2><T>Let’s get your cargo</T><br /><em><T>on the same page.</T></em></h2><Link href="/signup" className="ink-button"><T>Create your account </T><span aria-hidden="true">↗</span></Link><p><T>Already part of the team? </T><Link href="/login"><T>Log in</T></Link></p></section>
+    </main>
+    <footer className="site-footer"><Wordmark /><p><T>Made for the journeys that connect Myanmar.</T></p><div><Link href="/login"><T>Log in</T></Link><Link href="/signup"><T>Sign up</T></Link><a href="#content"><T>Back to top ↑</T></a></div></footer>
+  </div>;
 }

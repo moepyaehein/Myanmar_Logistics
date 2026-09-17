@@ -1,4 +1,6 @@
 "use client";
+import {T} from "@/components/i18n/language-provider";
+
 
 import { useEffect,useRef,useState,useTransition } from "react";
 import { usePathname,useRouter,useSearchParams } from "next/navigation";
@@ -83,9 +85,9 @@ function LivePage({userId,role,children}:Props) {
     if(element instanceof Element&&element.closest("form.shipment-form")){editingRef.current=true;setEditing(true);}
   };
   const label={connecting:"Connecting",live:"Live",reconnecting:"Reconnecting",offline:"Offline"}[connection];
-  if(signedOut)return <p className="dashboard-message">Session ended. Opening sign in…</p>;
+  if(signedOut)return <p className="dashboard-message"><T>Session ended. Opening sign in…</T></p>;
   return <div className={`live-workspace live-role-${role}`} onInputCapture={markEditing} onChangeCapture={markEditing} onClickCapture={markEditing} onSubmitCapture={markEditing}>
-    <div className={`live-banner live-${connection}`} role="status" aria-live="polite"><span className="live-dot" aria-hidden="true" /><strong>{label}</strong><span>{editing ? "Automatic refresh paused while editing. Reload when ready to load the latest data." : connection==="offline" ? "Showing previously loaded data. Updates resume when connected." : connection==="reconnecting" ? "Restoring live updates. Data is also checked every 30 seconds." : refreshing ? "Updating shipment data…" : "Shipment changes appear automatically."}</span><button className="button signout-button" type="button" onClick={()=>window.location.reload()} disabled={connection==="offline"}>Reload latest</button></div>
+    <div className={`live-banner live-${connection}`} role="status" aria-live="polite"><span className="live-dot" aria-hidden="true" /><strong><T>{label}</T></strong><span><T>{editing ? "Automatic refresh paused while editing. Reload when ready to load the latest data." : connection==="offline" ? "Showing previously loaded data. Updates resume when connected." : connection==="reconnecting" ? "Restoring live updates. Data is also checked every 30 seconds." : refreshing ? "Updating shipment data…" : "Shipment changes appear automatically."}</T></span><button className="button signout-button" type="button" onClick={()=>window.location.reload()} disabled={connection==="offline"}><T>Reload latest</T></button></div>
     {children}
   </div>;
 }

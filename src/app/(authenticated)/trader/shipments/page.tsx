@@ -1,3 +1,5 @@
+
+import {T} from "@/components/i18n/language-provider";
 import Link from "next/link";
 import { ShipmentList } from "@/components/shipments/shipment-list";
 import { SHIPMENT_STATUSES, type ShipmentStatus } from "@/types/domain";
@@ -9,5 +11,5 @@ export default async function ShipmentsPage({ searchParams }: { searchParams: Pr
   const parsedPage = Number(params.page);
   const page = Number.isSafeInteger(parsedPage) && parsedPage > 0 && parsedPage <= 10000 ? parsedPage : 1;
   const status = SHIPMENT_STATUSES.includes(params.status as ShipmentStatus) ? params.status as ShipmentStatus : undefined;
-  return <><div className="page-heading"><div><p className="eyebrow">YOUR CARGO, IN VIEW</p><h1>My shipments<span>.</span></h1><p className="muted">Follow your requests from pickup to destination.</p></div><Link className="button button-dark" href="/trader/shipments/new">New transport request →</Link></div><ShipmentList page={page} status={status} /></>;
+  return <><div className="page-heading"><div><p className="eyebrow"><T>YOUR CARGO, IN VIEW</T></p><h1><T>My shipments</T><span>.</span></h1><p className="muted"><T>Follow your requests from pickup to destination.</T></p></div><Link className="button button-dark" href="/trader/shipments/new"><T>New transport request →</T></Link></div><ShipmentList page={page} status={status} /></>;
 }

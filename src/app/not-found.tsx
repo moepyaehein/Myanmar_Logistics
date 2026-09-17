@@ -1,5 +1,7 @@
+
+import {T} from "@/components/i18n/language-provider";
 import Link from "next/link";
 
 export default function NotFound() {
-  return <main className="state-page"><p className="eyebrow">404 · PAGE NOT FOUND</p><h1>This route isn’t here yet.</h1><p className="muted">The Phase 1 overview is ready to explore.</p><Link href="/" className="button button-dark">Back to overview</Link></main>;
+  return <main className="state-page"><p className="eyebrow"><T>404 · PAGE NOT FOUND</T></p><h1><T>This route isn’t here yet.</T></h1><p className="muted"><T>Return to shipments</T></p><Link href="/" className="button button-dark"><T>Back to overview</T></Link></main>;
 }

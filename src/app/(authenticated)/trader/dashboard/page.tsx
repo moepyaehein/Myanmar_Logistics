@@ -1,3 +1,5 @@
+
+import {T} from "@/components/i18n/language-provider";
 ﻿import Link from "next/link";
 import { requireRole } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
@@ -20,8 +22,8 @@ export default async function TraderDashboard() {
     { label: "Delivered", result: delivered, note: "Completed journeys" },
   ];
   return <>
-    <div className="page-heading"><div><p className="eyebrow">YOUR TRADING WORKSPACE</p><h1>Welcome, {profile.full_name.split(" ")[0]}<span>.</span></h1><p className="muted">Request transport and follow your cargo, all in one place.</p></div><Link className="button button-dark" href="/trader/shipments/new">New transport request →</Link></div>
-    <section className="stats-grid" aria-label="Your shipment statistics">{metrics.map(metric => <article className="stat-card" key={metric.label}><p className="stat-top">{metric.label}</p><p className="stat-value">{metric.result.error ? "—" : metric.result.count ?? 0}</p><p className="stat-detail">{metric.result.error ? "Temporarily unavailable" : metric.note}</p></article>)}</section>
+    <div className="page-heading"><div><p className="eyebrow"><T>YOUR TRADING WORKSPACE</T></p><h1><T>Welcome, </T>{profile.full_name.split(" ")[0]}<span>.</span></h1><p className="muted"><T>Request transport and follow your cargo, all in one place.</T></p></div><Link className="button button-dark" href="/trader/shipments/new"><T>New transport request →</T></Link></div>
+    <section className="stats-grid" aria-label="Your shipment statistics">{metrics.map(metric => <article className="stat-card" key={metric.label}><p className="stat-top"><T>{metric.label}</T></p><p className="stat-value">{metric.result.error ? "—" : metric.result.count ?? 0}</p><p className="stat-detail"><T>{metric.result.error ? "Temporarily unavailable" : metric.note}</T></p></article>)}</section>
     <TraderAlertSummary /><ShipmentList compact />
   </>;
 }

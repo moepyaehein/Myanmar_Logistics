@@ -79,12 +79,18 @@ async function main() {
         });
         const { error } = await ssr.auth.setSession(sessions[`${role}@demo.com`].session);
         assert.equal(error, null);
-        const cookie = [...jar].map(([name,value]) => `${name}=${encodeURIComponent(value)}`).join('; ');
+        const cookie = [...jar].map(([name,value]) => `${name}=${encodeURIComponent(value)}`).join('; ') + '; logistics-language=en';
         const allowed = await fetch(new URL(`/${role}/dashboard`, origin), { headers: { Cookie: cookie }, redirect: 'manual' });
         assert.equal(allowed.status, 200);
         assert.match(allowed.headers.get('cache-control') ?? '', /private|no-store/);
         const html = await allowed.text();
         assert.ok(html.includes('Sign out'));
+        const localized = await fetch(new URL(`/${role}/dashboard`, origin), {headers:{Cookie:cookie.replace('logistics-language=en','logistics-language=my')}});
+        assert.equal(localized.status,200);
+        const localizedHtml = await localized.text();
+        assert.ok(localizedHtml.includes('<html lang="my"'), 'Authenticated document must use Burmese.');
+        assert.ok(localizedHtml.includes('အကောင့်မှ ထွက်ရန်'), 'Authenticated interface must translate sign out.');
+        assert.ok(localizedHtml.includes('class="language-switch"'), 'Authenticated workspace must expose language controls.');
         assert.ok(!html.includes('We couldn’t load shipments'));
         const other = role === 'admin' ? 'trader' : 'admin';
         const denied = await fetch(new URL(`/${other}/dashboard`, origin), { headers: { Cookie: cookie }, redirect: 'manual' });
@@ -93,6 +99,7 @@ async function main() {
         assert.ok(location?.endsWith(`/${role}/dashboard`) || (await denied.text()).includes(`NEXT_REDIRECT;replace;/${role}/dashboard`));
       }
       console.log('PASS: anonymous route redirects, authenticated dashboards and cross-role route rejection.');
+      console.log('PASS: Admin, Trader and Driver dashboards render Burmese with language controls.');
     }
   } finally {
     for (const client of clients) await client.auth.signOut({ scope: 'local' });

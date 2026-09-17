@@ -1,4 +1,6 @@
 "use client";
+import {T,useLanguage} from "@/components/i18n/language-provider";
+
 
 import { useEffect, useRef, useState } from "react";
 import type { Map as LeafletMap, Marker, LatLngTuple } from "leaflet";
@@ -11,6 +13,7 @@ const locations: Record<string, LatLngTuple> = {
 type Props = { origin: string; destination: string; gate: string; latitude: number | null; longitude: number | null };
 
 export function ShipmentMap({ origin, destination, gate, latitude, longitude }: Props) {
+  const {t}=useLanguage();
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const markerRef = useRef<Marker | null>(null);
@@ -61,9 +64,9 @@ export function ShipmentMap({ origin, destination, gate, latitude, longitude }: 
     return () => { disposed = true; observer?.disconnect(); mapRef.current?.remove(); mapRef.current = null; markerRef.current = null; leafletRef.current = null; };
   }, [origin, destination, gate]);
   return <section className="panel tracking-panel">
-    <div className="panel-heading"><div><h2>Shipment map</h2><p className="panel-subtitle">Last reported location · Device or demo GPS</p></div><button type="button" className="button signout-button" onClick={() => mapRef.current?.setView(hasPosition ? [latitude!, longitude!] : [20.5,96.5], hasPosition ? 10 : 6)}> {hasPosition ? "Find truck" : "Myanmar view"}</button></div>
-    <div ref={container} className="shipment-map" role="region" aria-label="Interactive shipment map" />
-    <div className="map-caption"><p role="status">{message}</p><p>{hasPosition ? `Truck coordinates: ${latitude!.toFixed(5)}, ${longitude!.toFixed(5)}` : "No truck location reported yet."}</p><p>Blue: origin · Green: destination · Amber: gate. Known demo locations are approximate; unrecognized place names are not plotted. The truck moves when a new saved position arrives. Use Find truck to recenter.</p></div>
+    <div className="panel-heading"><div><h2><T>Shipment map</T></h2><p className="panel-subtitle"><T>Last reported location · Device or demo GPS</T></p></div><button type="button" className="button signout-button" onClick={() => mapRef.current?.setView(hasPosition ? [latitude!, longitude!] : [20.5,96.5], hasPosition ? 10 : 6)}> <T>{hasPosition ? "Find truck" : "Myanmar view"}</T></button></div>
+    <div ref={container} className="shipment-map" role="region" aria-label={t("Shipment map")} />
+    <div className="map-caption"><p role="status"><T>{message}</T></p><p><T>{hasPosition ? `${t("Truck coordinates")}: ${latitude!.toFixed(5)}, ${longitude!.toFixed(5)}` : "No truck location reported yet."}</T></p><p><T>Blue: origin · Green: destination · Amber: gate. Known demo locations are approximate; unrecognized place names are not plotted. The truck moves when a new saved position arrives. Use Find truck to recenter.</T></p></div>
   </section>;
 }
 

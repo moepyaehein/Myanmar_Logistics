@@ -13,6 +13,17 @@ before(async()=>{
   await db.query("insert into public.gate_statuses(id,gate_name,location) values($1,'Phase 7 Gate','Test border')",[gateId]);
 });
 after(async()=>{await db?.close();});
+test('alert RPCs reject missing identities and missing profiles without writing',async()=>{
+  const beforeCount=(await db.query('select count(*)::int as count from public.alerts')).rows[0].count;
+  const missingProfile=randomUUID();
+  await db.query('insert into auth.users(id,email) values($1,$2)',[missingProfile,`${missingProfile}@test.invalid`]);
+  await db.query('delete from public.profiles where id=$1',[missingProfile]);
+  for(const user of [null,missingProfile]) {
+    await assert.rejects(asUser(user,tx=>tx.query("select public.broadcast_alert('Unauthorized','Must never be sent')")),{code:'42501'});
+    await assert.rejects(asUser(user,tx=>tx.query('select public.mark_alert_read($1,true)',[randomUUID()])),{code:'42501'});
+  }
+  assert.equal((await db.query('select count(*)::int as count from public.alerts')).rows[0].count,beforeCount);
+});
 function asUser(user,fn,role='authenticated'){return db.transaction(async tx=>{await tx.exec(`set local role ${role}`);await tx.query("select set_config('request.jwt.claim.sub',$1,true)",[user??'']);return fn(tx);});}
 async function shipment(owner,status='approved'){const id=randomUUID();await db.query("insert into public.shipments(id,trader_id,driver_id,origin,destination,cargo_type,cargo_description,quantity,pickup_date,route_gate_id,status) values($1,$2,$3,'Yangon','Muse','Alert test','Cargo',1,current_date+1,$4,$5)",[id,owner,driver,gateId,status]);return id;}
 async function gate(status,reason){const revision=(await db.query('select updated_at::text as revision from public.gate_statuses where id=$1',[gateId])).rows[0].revision;return asUser(admin,tx=>tx.query('select public.change_gate_status($1,$2,$3,$4)',[gateId,revision,status,reason]));}

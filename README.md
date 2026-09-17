@@ -2,7 +2,7 @@
 
 AI Engineering Assignment 5 — a phased, demo-focused logistics MVP built with LLM-assisted coding.
 
-**Current status: Phase 8 implemented.** Drivers can submit updates offline; pending items sync when connectivity returns. Gate disruption alerts are automatic. Admin broadcasts reach every Trader. Realtime delivers changes instantly. Phases 1–7 are complete: Trader/Admin/Driver workspaces, live tracking, milestone timeline, Leaflet maps, device GPS, private evidence, gate alerts and connection management. See [Phase 8 checks](docs/PHASE_8_CHECKLIST.md). The public overview remains a static design preview.
+**Current status: Phases 1–8 implemented; Vercel deployment is reachable.** This update adds a redesigned public landing page, bundled Newsreader / IBM Plex Sans fonts, Trader signup and email confirmation, and matching login. Drivers can queue updates from an open page and sync manually. Production email settings and Phase 9 acceptance remain pending. See the [project review and deployment checklist](docs/PROJECT_REVIEW_2026-09-17.md) for verified findings and next steps.
 
 ## Run locally
 
@@ -23,7 +23,7 @@ npm run build    # Production compilation
 npm start        # Serve a successful production build
 ```
 
-`npm run verify` runs code checks, 67 local database/scheduler/queue tests and production build. If port 3000 is busy, use `node node_modules/next/dist/bin/next dev -p 3001` and open that port. The app has no external font downloads; authenticated pages contact your Supabase project.
+`npm run verify` runs lint, TypeScript, 68 local database/scheduler/queue tests, 7 signup/language tests and the production build. Existing queue tests duplicate implementation and need replacement with direct module coverage. If port 3000 is busy, use `node node_modules/next/dist/bin/next dev -p 3001`. Fonts are served by the app; authenticated pages contact Supabase. The interface defaults to Burmese, with a persistent English/Burmese switch; see [language support](docs/BURMESE_LANGUAGE.md).
 
 ## Purpose and roles
 
@@ -76,7 +76,7 @@ AI_ENGINEERING_LOG.md      Prompts, decisions, detected issues and fixes
 | 7 | Automatic gate alerts and broadcasts | Implemented; SQL, API and Realtime checks passed |
 | 8 | Offline queue and manual synchronization | Implemented; queue tests passed |
 | 9 | End-to-end demo and security tests; fixes | Planned |
-| 10 | Deployment and demo preparation | Planned |
+| 10 | Deployment and demo preparation | Vercel reachable; production Auth configuration and final acceptance pending |
 
 ## Database and Supabase setup
 

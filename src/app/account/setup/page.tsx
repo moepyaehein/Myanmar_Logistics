@@ -1,3 +1,5 @@
+
+import {T} from "@/components/i18n/language-provider";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getIdentity, getProfile } from "@/lib/auth/session";
@@ -9,10 +11,10 @@ export default async function AccountSetupPage() {
   const profile = await getProfile();
   if (profile) redirect(ROLE_HOME[profile.role]);
   return <main className="state-page">
-    <p className="eyebrow">ACCOUNT ACCESS</p>
-    <h1>Your workspace isn’t ready yet.</h1>
-    <p className="muted">You are signed in, but we couldn’t load your account profile. Contact your administrator or try again shortly.</p>
-    <Link className="button button-dark" href="/account/setup">Check again</Link>
-    <form action={signOut}><button className="button" type="submit">Sign out</button></form>
+    <p className="eyebrow"><T>ACCOUNT ACCESS</T></p>
+    <h1><T>Your workspace isn’t ready yet.</T></h1>
+    <p className="muted"><T>You are signed in, but we couldn’t load your account profile. Contact your administrator or try again shortly.</T></p>
+    <Link className="button button-dark" href="/account/setup"><T>Check again</T></Link>
+    <form action={signOut}><button className="button" type="submit"><T>Sign out</T></button></form>
   </main>;
 }

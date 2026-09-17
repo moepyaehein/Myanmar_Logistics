@@ -1,1 +1,3 @@
-export default function Loading() { return <p className="dashboard-message" role="status">Loading your assignments…</p>; }
+
+import {T} from "@/components/i18n/language-provider";
+export default function Loading() { return <p className="dashboard-message" role="status"><T>Loading your assignments…</T></p>; }

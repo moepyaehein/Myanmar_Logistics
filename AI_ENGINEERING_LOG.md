@@ -294,6 +294,8 @@ The exact infrastructure behavior behind the earlier timeout was not established
 
 ## Phase 8 — Offline Driver queue and synchronization
 
+> Follow-up review (17 September 2026): the Phase 8 tests below duplicate queue logic rather than importing the production module. They do not establish end-to-end offline reliability. See the project review for the request-ID, revision and identity checks still needed.
+
 ### Prompt and implementation
 
 - User requested completion through deployment. Implemented the offline queue for Driver updates using localStorage and the existing `append_driver_update` RPC.
@@ -308,3 +310,7 @@ The exact infrastructure behavior behind the earlier timeout was not established
 
 - All 11 offline queue tests passed. All 56 existing database/scheduler tests passed. TypeScript and production build passed.
 - Acceptance steps are in `docs/PHASE_8_CHECKLIST.md`.
+
+## Burmese interface — user-requested accessibility follow-up
+
+Added Burmese-first rendering, a persistent English/Burmese switch and bundled Noto Sans Myanmar. Explicit React translation components cover main public/authentication and role workflows, with a shared dictionary and unchanged stored status values. User-entered notes and broadcasts stay in their original language. Generated gate alerts translate their framing while preserving the reason. Automated locale/status/validation tests, public bilingual HTTP checks and authenticated Burmese dashboard checks were added. Type checking identified a missing gate column in the alert-summary query and an unsupported regex flag; both were corrected. Visual browser discovery returned no browser. Details and manual acceptance are in `docs/BURMESE_LANGUAGE.md`.
