@@ -10,7 +10,7 @@ export function WorkspaceNav({role,unreadAlerts=0}:{role:"admin"|"trader";unread
   const {t}=useLanguage();
   const pathname=usePathname();
   const links=role==="admin"
-    ? [{href:"/admin/dashboard",label:"Dashboard",icon:"grid"},{href:"/admin/shipments",label:"All shipments",icon:"box"},{href:"/admin/gates",label:"Border gates",icon:"route"},{href:"/admin/alerts",label:"Alerts",icon:"bell"}] as const
+    ? [{href:"/admin/dashboard",label:"Dashboard",icon:"grid"},{href:"/admin/shipments",label:"All shipments",icon:"box"},{href:"/admin/drivers",label:"Drivers",icon:"truck"},{href:"/admin/gates",label:"Border gates",icon:"route"},{href:"/admin/alerts",label:"Alerts",icon:"bell"}] as const
     : [{href:"/trader/dashboard",label:"Dashboard",icon:"grid"},{href:"/trader/shipments",label:"My shipments",icon:"box"},{href:"/trader/shipments/new",label:"New request",icon:"route"},{href:"/trader/alerts",label:"Alerts",icon:"bell"}] as const;
   return <nav className="main-nav" aria-label={t(role==="admin"?"Admin navigation":"Trader navigation")}>{links.map(link=>{
     const active=pathname===link.href||(link.icon==="box"&&pathname.startsWith(link.href+"/")&&pathname!=="/trader/shipments/new");

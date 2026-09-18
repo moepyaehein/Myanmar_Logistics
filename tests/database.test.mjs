@@ -38,9 +38,9 @@ before(async () => {
 });
 after(async () => { await db?.close(); });
 
-test('all six operational tables enable RLS', async () => {
+test('all seven operational tables enable RLS', async () => {
   const { rows } = await db.query("select relname, relrowsecurity from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r'");
-  assert.equal(rows.length, 6); assert.ok(rows.every(row => row.relrowsecurity));
+  assert.equal(rows.length, 7); assert.ok(rows.every(row => row.relrowsecurity));
 });
 test('signup metadata cannot assign an elevated role; email changes mirror', async () => {
   const id = '40000000-0000-4000-8000-000000000009';
@@ -108,8 +108,9 @@ test('private evidence objects are visible only to authorized shipment viewers',
   assert.equal((await asUser(null, tx => tx.query('select * from storage.objects'), 'anon')).rows.length, 0);
 });
 test('participant roles and coordinate/quantity checks are enforced by PostgreSQL', async () => {
+  // Reassigning to a non-driver is intercepted by the active-driver guard trigger.
+  await assert.rejects(db.exec(`update public.shipments set driver_id='${trader}' where id='${shipmentIds[0]}'`), { code: '22023' });
   for (const sql of [
-    `update public.shipments set driver_id='${trader}' where id='${shipmentIds[0]}'`,
     `update public.shipments set trader_id='${driver}' where id='${shipmentIds[0]}'`,
     `update public.shipments set current_lat=91 where id='${shipmentIds[0]}'`,
     `update public.shipments set current_lat=null where id='${shipmentIds[0]}'`,

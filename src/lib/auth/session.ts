@@ -3,6 +3,7 @@ import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isUserRole, ROLE_HOME } from "./roles";
+import {profileDestination} from "./destination";
 import type { UserRole } from "@/types/domain";
 
 // React cache deduplicates within a render, never across users or requests.
@@ -18,7 +19,7 @@ export const getProfile = cache(async () => {
   if (!user) return null;
   const supabase = await createClient();
   const { data, error } = await supabase.from("profiles")
-    .select("id,full_name,email,role").eq("id", user.id).maybeSingle();
+    .select("id,full_name,email,role,driver_access").eq("id", user.id).maybeSingle();
   if (error || !data || !isUserRole(data.role)) return null;
   return data;
 });
@@ -27,6 +28,7 @@ export async function requireProfile() {
   if (!(await getIdentity())) redirect("/login");
   const profile = await getProfile();
   if (!profile) redirect("/account/setup");
+  if(profile.role==="driver"&&profile.driver_access!=="active")redirect(profileDestination(profile));
   return profile;
 }
 

@@ -47,8 +47,9 @@ try {
   output += '    };\n    Views: { [_ in never]: never };\n    Functions: {\n';
   for (const fn of functions) {
     // PostgreSQL function arguments accept NULL; each RPC enforces required values itself.
-    const args = fn.proargnames.map((name, index) => `${name}: ${mapType({udt_name: typesById.get(fn.argtypes[index]), is_nullable: 'YES'})}`).join('; ');
-    output += `      ${fn.proname}: { Args: { ${args} }; Returns: ${mapType({udt_name: fn.return_type})} };\n`;
+    const args = (fn.proargnames ?? []).map((name, index) => `${name}: ${mapType({udt_name: typesById.get(fn.argtypes[index]), is_nullable: 'YES'})}`).join('; ');
+    const argsType = args ? `{ ${args} }` : 'Record<string, never>';
+    output += `      ${fn.proname}: { Args: ${argsType}; Returns: ${mapType({udt_name: fn.return_type})} };\n`;
   }
   output += '    };\n    Enums: {\n';
   for (const name of enumNames) output += `      ${name}: ${enums.filter(row => row.typname === name).map(row => JSON.stringify(row.enumlabel)).join(' | ')};\n`;

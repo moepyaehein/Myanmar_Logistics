@@ -82,6 +82,51 @@ export type Database = {
           { foreignKeyName: "documents_driver_id_fkey"; columns: ["driver_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
         ];
       };
+      driver_invitations: {
+        Row: {
+          id: string;
+          email: string;
+          full_name: string;
+          phone: string;
+          invited_by: string;
+          driver_id: string | null;
+          status: string;
+          created_at: string;
+          last_attempt_at: string;
+          last_sent_at: string | null;
+          accepted_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          full_name: string;
+          phone?: string;
+          invited_by: string;
+          driver_id?: string | null;
+          status?: string;
+          created_at?: string;
+          last_attempt_at?: string;
+          last_sent_at?: string | null;
+          accepted_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          full_name?: string;
+          phone?: string;
+          invited_by?: string;
+          driver_id?: string | null;
+          status?: string;
+          created_at?: string;
+          last_attempt_at?: string;
+          last_sent_at?: string | null;
+          accepted_at?: string | null;
+        };
+        Relationships: [
+          { foreignKeyName: "driver_invitations_invited_by_fkey"; columns: ["invited_by"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "driver_invitations_driver_id_fkey"; columns: ["driver_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ];
+      };
       gate_statuses: {
         Row: {
           id: string;
@@ -121,6 +166,8 @@ export type Database = {
           email: string;
           role: Database["public"]["Enums"]["app_role"];
           created_at: string;
+          driver_access: string;
+          phone: string;
         };
         Insert: {
           id: string;
@@ -128,6 +175,8 @@ export type Database = {
           email: string;
           role?: Database["public"]["Enums"]["app_role"];
           created_at?: string;
+          driver_access?: string;
+          phone?: string;
         };
         Update: {
           id?: string;
@@ -135,6 +184,8 @@ export type Database = {
           email?: string;
           role?: Database["public"]["Enums"]["app_role"];
           created_at?: string;
+          driver_access?: string;
+          phone?: string;
         };
         Relationships: [
         ];
@@ -255,14 +306,18 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
+      activate_invited_driver: { Args: Record<string, never>; Returns: string };
       append_driver_update: { Args: { p_id: string | null; p_shipment_id: string | null; p_expected_updated_at: string | null; p_status: Database["public"]["Enums"]["shipment_status"] | null; p_note: string | null; p_latitude: number | null; p_longitude: number | null; p_occurred_at: string | null }; Returns: string };
       broadcast_alert: { Args: { p_title: string | null; p_message: string | null }; Returns: number };
       change_gate_status: { Args: { p_id: string | null; p_expected_updated_at: string | null; p_status: Database["public"]["Enums"]["gate_status"] | null; p_reason: string | null }; Returns: string };
       create_shipment: { Args: { p_input: Json | null }; Returns: string };
       edit_requested_shipment: { Args: { p_shipment_id: string | null; p_expected_updated_at: string | null; p_input: Json | null }; Returns: string };
+      finalize_driver_invitation: { Args: { p_invitation_id: string | null; p_user_id: string | null }; Returns: string };
       manage_shipment: { Args: { p_id: string | null; p_expected_updated_at: string | null; p_action: string | null; p_driver_id: string | null; p_status: Database["public"]["Enums"]["shipment_status"] | null; p_note: string | null }; Returns: string };
       mark_alert_read: { Args: { p_id: string | null; p_is_read: boolean | null }; Returns: string };
       register_shipment_document: { Args: { p_id: string | null; p_shipment_id: string | null; p_document_type: string | null; p_original_name: string | null; p_mime_type: string | null; p_size_bytes: number | null; p_extension: string | null }; Returns: string };
+      reserve_driver_invitation: { Args: { p_full_name: string | null; p_email: string | null; p_phone: string | null; p_retry_id: string | null }; Returns: string };
+      set_driver_access: { Args: { p_driver_id: string | null; p_expected_access: string | null; p_enable: boolean | null }; Returns: string };
       shipment_driver_name: { Args: { p_shipment_id: string | null }; Returns: string };
       shipment_milestones: { Args: { p_shipment_id: string | null }; Returns: Json };
     };

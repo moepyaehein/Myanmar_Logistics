@@ -14,7 +14,7 @@ export default async function Page({params,searchParams}:{params:Promise<{id:str
   const {id}=await params; const shipment=await getAdminShipment(id); const {saved}=await searchParams;
   const supabase=await createClient();
   const [drivers,people,updates,progress]=await Promise.all([
-    supabase.from("profiles").select("id,full_name").eq("role","driver").order("full_name"),
+    supabase.from("profiles").select("id,full_name").eq("role","driver").eq("driver_access","active").order("full_name"),
     supabase.from("profiles").select("id,full_name").in("id",[shipment.trader_id,...(shipment.driver_id ? [shipment.driver_id] : [])]),
     supabase.from("shipment_updates").select("id,status,note,created_at").eq("shipment_id",id).order("created_at",{ascending:false}).order("id").limit(20),
     supabase.from("shipment_updates").select("id",{count:"exact",head:true}).eq("shipment_id",id).not("status","in","(requested,approved)"),
