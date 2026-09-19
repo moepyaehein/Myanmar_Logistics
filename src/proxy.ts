@@ -3,9 +3,12 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 
 export async function proxy(request: NextRequest) {
+  const referrerPolicy = request.nextUrl.pathname === "/auth" || request.nextUrl.pathname.startsWith("/auth/")
+    ? "no-referrer"
+    : "strict-origin-when-cross-origin";
   let response = NextResponse.next({ request });
   response.headers.set("Cache-Control", "private, no-store");
-  response.headers.set("Referrer-Policy", "no-referrer");
+  response.headers.set("Referrer-Policy", referrerPolicy);
   try {
     const { url, key } = getSupabaseConfig();
     const supabase = createServerClient(url, key, {
@@ -16,7 +19,7 @@ export async function proxy(request: NextRequest) {
           response = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
           response.headers.set("Cache-Control", "private, no-store");
-          response.headers.set("Referrer-Policy", "no-referrer");
+          response.headers.set("Referrer-Policy", referrerPolicy);
         },
       },
     });

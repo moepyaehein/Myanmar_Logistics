@@ -41,7 +41,12 @@ export function ShipmentMap({ origin, destination, gate, latitude, longitude }: 
       const tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
-      tiles.on("tileerror", () => { if (!disposed) setMessage("Some map tiles could not load. Check your connection; saved coordinates remain available below."); });
+      tiles.on("tileerror", () => {
+        if (disposed) return;
+        tiles.remove();
+        container.current?.classList.add("shipment-map--tiles-unavailable");
+        setMessage("Some map tiles could not load. Check your connection; saved coordinates remain available below.");
+      });
       const points: LatLngTuple[] = [];
       for (const [label, name, color] of [["Origin", origin, "#2563eb"], ["Destination", destination, "#16a34a"], ["Gate", gate, "#d97706"]]) {
         const point = locations[name.trim().toLowerCase()];
